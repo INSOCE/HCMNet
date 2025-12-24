@@ -27,7 +27,6 @@ def normalize_data(X_train, X_val, X_test, method='standard'):
     else:
         scaler = StandardScaler()
 
-    # 对于单通道数据 (batch, length)
     if len(original_shape_train) == 2:
         X_train_normalized = scaler.fit_transform(X_train)
         X_val_normalized = scaler.transform(X_val)
@@ -57,7 +56,6 @@ def normalize_data(X_train, X_val, X_test, method='standard'):
 
 
 def main():
-    # 定义命令行参数解析器
     now = time.strftime('%Y%m%d_%H%M%S')
     parser = argparse.ArgumentParser(description="在不同数据集上训练和评估模型")
     parser.add_argument("--dataset", type=str, default="mci", choices=["wesad", "mci", "dreamer"])
@@ -79,7 +77,6 @@ def main():
     parser.add_argument("--normalization", type=str, default="robust", choices=["standard", "robust"],
                         help="归一化方法：standard (StandardScaler) 或 robust (RobustScaler)")
 
-    # 添加调度器相关参数
     parser.add_argument("--scheduler", type=str, default="ReduceLROnPlateau",
                         choices=["ReduceLROnPlateau", "CosineAnnealing"], help="选择学习率调度器类型")
     parser.add_argument("--patience_lr", type=int, default=15, help="ReduceLROnPlateau的patience")
@@ -243,7 +240,6 @@ def main():
             )
             model.to(device)
 
-            # 打印模型参数量（仅在第一折时打印）
             if fold == 1:
                 total_params = sum(p.numel() for p in model.parameters())
                 trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
@@ -324,7 +320,6 @@ def main():
         )
         logging.info(f"已生成并保存十折平均混淆矩阵 (原始计数和百分比版本)")
 
-    # 保存详细结果到文件
     result_file = os.path.join(output_dir, "all_results.txt")
     with open(result_file, "w") as f:
         f.write("折叠号 | Accuracy | F1 Score | UAR\n")
@@ -340,3 +335,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
